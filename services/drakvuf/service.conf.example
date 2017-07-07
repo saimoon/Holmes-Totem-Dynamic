@@ -1,0 +1,10 @@
+{
+	"HTTPBinding":":8080",
+	"VerifySSL":true,
+	"CheckFreeSpace":true,
+	"DrakvufURL":"http://127.0.0.1:8090",
+	"MaxPending":5,
+	"MaxAPICalls":10000,
+	"LogFile":"",
+	"LogLevel":"debug"
+}
