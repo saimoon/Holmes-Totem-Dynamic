@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/HolmesProcessing/Holmes-Totem-Dynamic/lib"
+	"github.com/saimoon/Holmes-Totem-Dynamic/lib"
 
 	"github.com/streadway/amqp"
 )
@@ -61,7 +61,7 @@ func (c *fCtx) parseMsg(msg amqp.Delivery) {
 		if !check {
 			//c.NackOnError(errors.New(serviceName+" not found"), "Service is not existing on this node", msg)
 			//return
-			c.Warning.Println("Service is not existing on this node")
+			c.Warning.Println("Service is not existing on this node: ", serviceName)
 			continue
 		}
 

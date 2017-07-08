@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/HolmesProcessing/Holmes-Totem-Dynamic/lib"
+	"github.com/saimoon/Holmes-Totem-Dynamic/lib"
 
 	"github.com/streadway/amqp"
 )

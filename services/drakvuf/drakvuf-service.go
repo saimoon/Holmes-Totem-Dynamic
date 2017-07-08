@@ -31,7 +31,7 @@ type RespTaskResults struct {
 
 func main() {
 
-	HTTPBinding := ":8090"
+	HTTPBinding := ":8080"
 
 	// routing
 	r := http.NewServeMux()
@@ -59,7 +59,7 @@ func HTTPStatus(w http.ResponseWriter, r *http.Request) {
 	resp := &RespStatus{
 		Degraded:  false,
 		Error:     "",
-		FreeSlots: 0,
+		FreeSlots: 5,
 	}
 
 	fmt.Printf("Request: %v\n", r)
