@@ -1,8 +1,9 @@
 {
-	"HTTPBinding":":8080",
+	"HTTPBinding":":9090",
 	"VerifySSL":true,
-	"CheckFreeSpace":true,
-	"DrakvufURL":"http://127.0.0.1:8090",
+	"IncomingDir":"/drakvuf/watch"
+	"ProcessingDir":"/drakvuf/serve"
+	"FinishedDir":"/drakvuf/output"
 	"MaxPending":5,
 	"MaxAPICalls":10000,
 	"LogFile":"",
