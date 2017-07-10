@@ -117,6 +117,8 @@ func HTTPStatus(w http.ResponseWriter, r *http.Request) {
 
 	resp.FreeSlots = ctx.Config.MaxPending - s.PendingTaskNum
 
+	log.Println("HTTPStatus FreeSlots: ", resp.FreeSlots)
+
 	json.NewEncoder(w).Encode(resp)
 }
 
@@ -175,6 +177,8 @@ func HTTPCheck(w http.ResponseWriter, r *http.Request) {
 
 	resp.Done = (s == 1)
 
+	log.Println("HTTPCheck Done: ", s)
+
 	json.NewEncoder(w).Encode(resp)
 }
 
@@ -202,6 +206,8 @@ func HTTPResults(w http.ResponseWriter, r *http.Request) {
 	if err = ctx.Drakvuf.DeleteTask(taskID); err != nil {
 		log.Println("Cleaning drakvuf up failed for task", taskID, err.Error())
 	}
+
+	log.Println("HTTPResults Result")
 
 	json.NewEncoder(w).Encode(resp)
 }
