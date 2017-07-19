@@ -142,6 +142,7 @@ func HTTPFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("DEBUG: Drakvuf.NewTask() sample=", sample)
 	taskID, err := ctx.Drakvuf.NewTask(sampleBytes, sample)
 	if err != nil {
 		resp.Error = err.Error()

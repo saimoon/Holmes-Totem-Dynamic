@@ -89,16 +89,16 @@ func (c *Drakvuf) NewTask(fileBytes []byte, fileName string) (string, error) {
 
 func (c *Drakvuf) TaskStatus(taskID string) (int, error) {
 	// check if task exists
-	_, ok := c.PendingTasks[taskID]
+	fileName, ok := c.PendingTasks[taskID]
 	if !ok {
 		err := errors.New(fmt.Sprintf("Task not pending: ", taskID))
 		return 0, err
 	}
 
 	// check if taskID dir exists in Drakvuf finished dir
-	_, err := os.Stat(c.FinishedDir + "/" + taskID)
-	if err != nil {
-		// Not found, task already pending
+	_, err := os.Stat(c.ProcessingDir + "/" + fileName)
+	if err == nil {
+		// Found, task already pending
 		return 0, nil
 	}
 
