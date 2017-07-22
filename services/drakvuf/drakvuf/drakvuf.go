@@ -3,6 +3,7 @@ package drakvuf
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -21,10 +22,55 @@ type StatusResp struct {
 }
 
 type TasksReport struct {
-	TaskID string `json;"taskid"`
-	Log    []byte `json:"log"`
+	TaskID string      `json;"taskid"`
+	Result interface{} `json:"result"`
 }
 
+type DrakvufHeaderMsg struct {
+	Plugin string `json:"Plugin"`
+	OS     string `json:"OS"`
+}
+
+type DrakvufSyscallMsg struct {
+	Plugin  string              `json:"Plugin"`
+	OS      string              `json:"OS"`
+	Common  *DrakvufCommonType  `json:"Common"`
+	Syscall *DrakvufSyscallType `json:"Syscall"`
+}
+
+type DrakvufCommonType struct {
+	vCPU     int    `json:"vCPU"`
+	CR3      int64  `json:"CR3"`
+	ProcName string `json:"ProcName"`
+	UID      int64  `json:"UID"`
+}
+
+type DrakvufSyscallType struct {
+	scModule string                    `json:"scModule"`
+	scName   string                    `json:"scName"`
+	nArgs    int                       `json:"nArgs"`
+	Args     []*DrakvufSyscallArgsType `json;"Args"`
+}
+
+type DrakvufSyscallArgsType struct {
+	ArgDir   string `json:"ArgDir"`
+	ArgType  string `json:"ArgType"`
+	ArgName  string `json:"ArgName"`
+	ArgValue int64  `json:"ArgValue"`
+}
+
+/* Example...
+type TasksReportInfo struct {
+	Signatures []*TasksReportSignature `json;"signatures"`
+	Behavior   *TasksReportBehavior    `json:"behavior"`
+	Started    string                  `json:"started"`
+	Ended      string                  `json:"ended"`
+	Id         int                     `json:"id"`
+	Machine    json.RawMessage         `json:"machine"` //can be TasksReportInfoMachine OR string
+}
+*/
+
+//******************************************************
 // Drakvuf constructor
 func New(incomingDir string, processingDir string, finishedDir string) (*Drakvuf, error) {
 	r := &Drakvuf{
@@ -128,7 +174,24 @@ func (c *Drakvuf) TaskReport(taskID string) (*TasksReport, error) {
 	// remove from pending task
 	delete(c.PendingTasks, taskID)
 
-	r.Log = resultBytes
+	hdr := &DrakvufHeaderMsg{}
+	err = json.Unmarshal(resultBytes, hdr)
+	if err != nil || hdr.Plugin == "" {
+		err = errors.New(fmt.Sprintf("Drakvuf json header result parsing error: ", taskID))
+		return nil, err
+	}
+	if hdr.Plugin == "syscall" {
+		sc := &DrakvufSyscallMsg{}
+		err := json.Unmarshal(resultBytes, sc)
+		if err != nil {
+			err = errors.New(fmt.Sprintf("Drakvuf json result parsing error: ", taskID))
+			return nil, err
+		}
+		r.Result = sc
+	} else {
+		err = errors.New(fmt.Sprintf("Drakvuf json result parsing not coded yet: ", hdr.Plugin))
+		return nil, err
+	}
 
 	return r, nil
 }

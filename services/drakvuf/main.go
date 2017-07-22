@@ -49,8 +49,8 @@ type RespCheckTask struct {
 }
 
 type RespTaskResults struct {
-	Error   string
-	Results interface{}
+	Error  string
+	Result interface{}
 }
 
 var (
@@ -202,13 +202,14 @@ func HTTPResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp.Results = report.Log
+	resp.Result = report.Result
+	log.Println("DEBUG: HTTPResults Result = ", report.Result)
 
 	if err = ctx.Drakvuf.DeleteTask(taskID); err != nil {
 		log.Println("Cleaning drakvuf up failed for task", taskID, err.Error())
 	}
 
-	log.Println("HTTPResults Result")
+	log.Println("HTTPResults Result = ", resp.Result)
 
 	json.NewEncoder(w).Encode(resp)
 }
